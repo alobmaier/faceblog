@@ -1,8 +1,9 @@
 <?php if ($model->user == null): ?>
-    <p>Not logged in. [<?php self::actionLink('Login', 'Login', 'User'); ?>]</p>
+    <li> <?php self::actionLink('Login', 'Login', 'User'); ?></li>
+    <li> <?php self::actionLink('Register', 'Register', 'User'); ?></li>
 <?php else: ?>
-    <p>Welcome, <?php self::out($model->user->getUserName()); ?></p>
-    <?php self::beginActionForm('Logout', 'User', null, 'post'); ?>
-    <input type="submit" value="Log out">
-    <?php self::endActionForm(); ?>
+    <a>Welcome, <?php self::out($model->user->getUserName()); ?></a>
+    <li><?php self::beginActionForm('Logout', 'User', null, 'post'); ?>
+    <input class="btn navbar-btn" type="submit" value="Log out">
+    <?php self::endActionForm(); ?></li>
 <?php endif ?>

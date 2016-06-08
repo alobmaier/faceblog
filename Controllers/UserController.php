@@ -25,4 +25,12 @@ class UserController extends Controller
         AuthenticationManager::signOut();
         return $this->redirect('index','Main');
     }
+    public function GET_Register()
+    {
+        return $this->renderView('Register', new RegisterModel($this->getParameter('userName'), $this->getParameter('displayName')));
+    }
+    public function POST_Register()
+    {
+        //store in db
+    }
 }

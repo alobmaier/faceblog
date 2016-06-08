@@ -7,10 +7,10 @@ class ViewRenderer
         require('Views/' .$view . '.inc');
     }
 
-    private static function actionLink($content, $action, $controller, $params = null)
+    private static function actionLink($content, $action, $controller, $styleclass = null, $params = null)
     {
         $url = Controller::buildActionLink($action, $controller, $params);
-        echo ("<a href='$url'>");
+        echo ("<a class='$styleclass' href='$url'>");
         echo ($content);
         echo ("</a>");
     }
@@ -22,7 +22,7 @@ class ViewRenderer
     private static function beginActionForm($action, $controller, $params=null, $method='get')
     {
         $form = <<<FORM
-        <form method="$method">
+        <form class="form-signin" "method="$method">
             <input type="hidden" name="controller" value="$controller" />
             <input type="hidden" name="action" value="$action"/>
 FORM;
