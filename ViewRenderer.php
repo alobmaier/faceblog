@@ -22,7 +22,7 @@ class ViewRenderer
     private static function beginActionForm($action, $controller, $params=null, $method='get')
     {
         $form = <<<FORM
-        <form class="form-signin" "method="$method">
+        <form class="form-signin" method="$method">
             <input type="hidden" name="controller" value="$controller" />
             <input type="hidden" name="action" value="$action"/>
 FORM;

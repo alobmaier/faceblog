@@ -1,21 +1,14 @@
 <?php require '_Header.inc'?>
 
-<h2>Register</h2>
 <?php self::beginActionForm('Register', 'User', null, 'post'); ?>
-    <table>
-        <tr>
-            <th>User name:</th>
-            <th><input name="userName" value="<?php self::out($model->userName); ?>"></th>
-        </tr>
-        <tr>
-            <th>Display name:</th>
-            <th><input name="displayName" value="<?php self::out($model->displayName); ?>"></th>
-        </tr>
-        <tr>
-            <th>Password:</th>
-            <th><input name="password" type="password" value=""></th>
-        </tr>
-    </table>
-    <input type="submit" value="Register">
+    <h2 class="form-signin-heading">Register</h2>
+    <label for="inputUserName">Username</label>
+    <input type="text" name="userName" id="inputUserName" class="form-control" placeholder="Username" value="<?php self::out($model->userName); ?>"required autofocus>
+    <label for="inputDisplayName">Display name</label>
+    <input type="text" name="displayName" id="inputDisplayName" class="form-control" placeholder="Display name" value="<?php self::out($model->displayName); ?>"required>
+    <label for="inputPassword">Password</label>
+    <input value="" type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Register"/>
 <?php self::endActionForm(); ?>
 <?php require('_Footer.inc'); ?>

@@ -24,7 +24,8 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><?php self::actionLink('List', 'List', 'Main')?> </li>
+                    <li><?php self::actionLink('Users', 'UserList', 'Main')?> </li>
+                    <li><?php self::actionLink('My Blog', 'MyBlog', 'Main')?></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><?php require '_User.inc'; ?></li>

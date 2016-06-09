@@ -4,7 +4,7 @@ class DataManager
 {
     private static function getConnection()
     {
-        $con = new mysqli('localhost', 'root', '', 'bookshop');
+        $con = new mysqli('localhost', 'root', '', 'blogdb');
         if(mysqli_connect_errno())
         {
             throw new Exception('unable to connect to database');
@@ -36,21 +36,26 @@ class DataManager
     {
         $connection->close();
     }
-    public static function getCategories()
+    public static function getBlogPostsForUser($userId)
     {
-        $categories = array();
+        $blogPosts = array();
+        $userId = intval($userId);
 
         $con = self::getConnection();
-        $res = self::query($con, "SELECT id, name FROM categories");
-        while($cat = self::fetchObject($res))
+        $stmt = $con->prepare("SELECT id, userid, title, content, createdAt, updatedAt FROM blog_posts WHERE userid=?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        while($entry = self::fetchObject($res))
         {
-            $categories[] = new Category($cat->id, $cat->name);
+            $blogPosts[] = new BlogPost($entry->id, $entry->userid, $entry->title, $entry->content, $entry->createdAt, $entry->updatedAt);
         }
 
         self::close($res);
         self::closeConnection($con);
 
-        return $categories;
+        return $blogPosts;
     }
     public static function getBooksForCategory($categoryId)
     {
@@ -113,10 +118,10 @@ class DataManager
 
         $con = self::getConnection();
         $userName = $con->real_escape_string($userName);
-        $res = self::query($con, "SELECT id, userName, passwordHash FROM users WHERE userName='$userName';");
+        $res = self::query($con, "SELECT id, userName, displayName, passwordHash, startTime FROM blog_members WHERE userName='$userName';");
         if($u = self::fetchObject($res))
         {
-            $user = new User($u->id, $u->userName, $u->passwordHash);
+            $user = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
         }
 
         self::close($res);
@@ -129,14 +134,50 @@ class DataManager
 
         $con = self::getConnection();
         $userId = intval($userId);
-        $res = self::query($con, "SELECT id, userName, passwordHash FROM users WHERE id='$userId';");
+        $res = self::query($con, "SELECT id, userName, displayName, passwordHash, startTime FROM blog_members WHERE id='$userId';");
         if($u = self::fetchObject($res))
         {
-            $user = new User($u->id, $u->userName, $u->passwordHash);
+            $user = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
         }
 
         self::close($res);
         self::closeConnection($con);
         return $user;
+    }
+    public static function getAllUsers()
+    {
+        $users = null;
+
+        $con = self::getConnection();
+
+        $userid = AuthenticationManager::getAuthenticatedUser()->getId();
+        $res = self::query($con, "SELECT * FROM blog_members WHERE id!='$userid';");
+        while($u = self::fetchObject($res))
+        {
+            $users[] = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
+        }
+        self::close($res);
+        self::closeConnection($con);
+        return $users;
+    }
+    public static function createUser($userName, $displayName, $password)
+    {
+        $con = self::getConnection();
+        $userName = $con->real_escape_string($userName);
+        $displayName = $con->real_escape_string($displayName);
+        $password = $con->real_escape_string($password);
+
+        $passwordHash = hash('sha1',"$userName|$password");
+
+        //insert new user
+        $stmt = $con->prepare("INSERT INTO blog_members(userName, displayName, passwordHash, startTime) VALUES(?,?,?,now());");
+        $stmt->bind_param("sss", $userName,$displayName, $passwordHash);
+        $stmt->execute();
+
+        self::query($con, "COMMIT;");
+
+        self::close($stmt);
+        self::closeConnection($con);
+
     }
 }

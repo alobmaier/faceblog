@@ -8,5 +8,3 @@ class LoginModel extends BaseModel
         $this->userName = $userName;
     }
 }
-
-?>

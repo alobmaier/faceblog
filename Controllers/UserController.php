@@ -32,5 +32,18 @@ class UserController extends Controller
     public function POST_Register()
     {
         //store in db
+        $userName = $_POST['userName'];
+        $displayName = $_POST['displayName'];
+        $password = $_POST['password'];
+
+        if (DataManager::getUserForUserName($userName) == null)
+        {
+            DataManager::createUser($userName, $displayName, $password);
+            return $this->renderView('RegisterSuccess', new RegisterSuccessModel($userName));
+        }
+        else
+        {
+            return $this->renderView('Register', new RegisterModel($userName, $displayName, array('User already exists!')));
+        }
     }
 }
