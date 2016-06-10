@@ -19,10 +19,10 @@ class ViewRenderer
         echo(nl2br(htmlentities($string)));
     }
 
-    private static function beginActionForm($action, $controller, $params=null, $method='get')
+    private static function beginActionForm($action, $controller, $params=null, $method='get', $style=null)
     {
         $form = <<<FORM
-        <form class="form-signin" method="$method">
+        <form class="$style" method="$method">
             <input type="hidden" name="controller" value="$controller" />
             <input type="hidden" name="action" value="$action"/>
 FORM;

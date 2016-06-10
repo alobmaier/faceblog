@@ -1,35 +1,28 @@
 @CHARSET "ISO-8859-1";
 
 body {
-	font-family: sans-serif;
+	padding-top: 50px;
+	background-color: ghostwhite;
 }
 
 .header {
 	margin-bottom: 20px;
-	padding: 10px 10px 10px 10px;
-	background-color: lightgoldenrodyellow;
-	color: black;
-	border: 2px solid black;
-	padding: 10px 10px 10px 10px;
+	padding: 30px 10px 40px 20px;
+	background: darkslategrey;
+	color: ghostwhite;
+	font-weight: bold;
 }
-
-.footer {
-	margin-top: 20px;
-	padding: 0px 10px 0px 10px;
-	background-color: #CCCCCC;
+.header h1 {
+	margin-left: auto;
+	margin-right: auto;
+}
+.header p{
+	font-weight: normal;
 }
 
 a {
 	text-decoration: none;
 	color: #3366FF;
-}
-
-a:hover {
-	font-weight: bold;
-}
-		
-.header a {
-	color: black;
 }
 
 h1 {
@@ -44,13 +37,14 @@ h1 {
 }
 
 .footer {
-	border: 1px solid gray;
+	padding: 10px 10px 10px 10px;
+	bottom: 0;
+	width: 100%;
+	background-color: darkslategrey;
+	color: ghostwhite;
 }
-
-.footer p {
+p {
 	margin: 0;
-	padding: 0;
-	font-size: 10pt;
 }
 
 table {
@@ -73,8 +67,8 @@ td {
 	font-weight: bold;
 	border: 1px solid red;
 }
-body {
-	padding-top: 60px;
+.form-navbar{
+	padding: 10px;
 }
 .form-signin {
 	max-width: 330px;
@@ -125,4 +119,8 @@ body {
 }
 .title {
 	color: orangered;
+}
+.panel-primary>.panel-heading{
+	background-color: darkslategrey;
+	border-color: darkslategrey;
 }

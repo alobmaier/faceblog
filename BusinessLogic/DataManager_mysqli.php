@@ -4,7 +4,7 @@ class DataManager
 {
     private static function getConnection()
     {
-        $con = new mysqli('localhost', 'root', '', 'blogdb');
+        $con = new mysqli('localhost', 'root', '', 'faceblogdb');
         if(mysqli_connect_errno())
         {
             throw new Exception('unable to connect to database');
@@ -42,7 +42,7 @@ class DataManager
         $userId = intval($userId);
 
         $con = self::getConnection();
-        $stmt = $con->prepare("SELECT id, userid, title, content, createdAt, updatedAt FROM blog_posts WHERE userid=?");
+        $stmt = $con->prepare("SELECT id, userid, title, content, createdAt, updatedAt FROM blog_post WHERE userid=? ORDER BY createdAt DESC");
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -57,59 +57,61 @@ class DataManager
 
         return $blogPosts;
     }
-    public static function getBooksForCategory($categoryId)
+    public static function getBlogPostById($postId)
     {
-        $books = array();
+        $post = null;
 
         $con = self::getConnection();
-        $res = self::query($con, "SELECT id, categoryId, title, author, price FROM books WHERE categoryId = $categoryId");
-        while($book = self::fetchObject($res))
+        $postId = intval($postId);
+        $res = self::query($con, "SELECT id, userId, title, content FROM blog_post WHERE id='$postId';");
+        if($p = self::fetchObject($res))
         {
-            $books[] = new Book($book->id, $book->categoryId, $book->title, $book->author, $book->price);
+            $post = new BlogPost($p->id, $p->userId, $p->title, $p->content, null, null);
         }
 
         self::close($res);
         self::closeConnection($con);
-
-        return $books;
+        return $post;
     }
-    public static function getBooksForSearchCriteria($title)
+    public static function createBlogPost($title, $content)
     {
-        $books = array();
-
         $con = self::getConnection();
+        $userId = AuthenticationManager::getAuthenticatedUser()->getId();
         $title = $con->real_escape_string($title);
-        $res = self::query($con, "SELECT id, categoryId, title, author, price FROM books WHERE title LIKE '%$title%';");
-        while($book = self::fetchObject($res))
-        {
-            $books[] = new Book($book->id, $book->categoryId, $book->title, $book->author, $book->price);
-        }
+        $content = $con->real_escape_string($content);
 
-        self::close($res);
-        self::closeConnection($con);
+        //insert new post
+        $stmt = $con->prepare("INSERT INTO blog_post(userId, title, content, createdAt, updatedAt) VALUES(?,?,?,now(),now());");
+        $stmt->bind_param("iss", $userId,$title, $content);
+        $stmt->execute();
 
-        return $books;
-    }
-    public static function createOrder($userId, $bookIds, $nameOnCard, $cardNumber)
-    {
-        $con = self::getConnection();
-
-        self::query($con, "BEGIN;");
-        $userId = intval($userId);
-        $nameOnCard = $con->real_escape_string($nameOnCard);
-        $cardNumber = $con->real_escape_string($cardNumber);
-        self::query($con, "INSERT INTO orders (userId, creditCardNumber, creditCardHolder) VALUES ($userId, $cardNumber, $nameOnCard);");
-        $orderId = self::lastInsertId($con);
-        foreach ($bookIds as $bookId)
-        {
-            $bookId = intval($bookId);
-            self::query($con, "INSERT INTO orderedBooks (orderId, bookId) VALUES ($orderId, $bookId);");
-        }
         self::query($con, "COMMIT;");
 
+        self::close($stmt);
         self::closeConnection($con);
+    }
+    public static function updateBlogPost($id, $title, $content)
+    {
+        $post = null;
 
-        return $orderId;
+        $con = self::getConnection();
+        $postId = intval($id);
+        $title = $con->real_escape_string($title);
+        $content = $con->real_escape_string($content);
+        $stmt = $con->prepare("UPDATE blog_post SET title = ?, content = ?, updatedAt = now() WHERE id = ?;");
+        $stmt->bind_param("ssi", $title,$content,$postId);
+        $stmt->execute();
+
+        self::query($con, "COMMIT;");
+
+        self::close($stmt);
+        self::closeConnection($con);
+    }
+    public static function deleteBlogEntryById($id)
+    {
+        $id = intval($id);
+        $con = self::getConnection();
+        self::query($con, "DELETE FROM blog_post WHERE id ='$id';");
     }
 
     public static function getUserForUserName($userName)
@@ -118,7 +120,7 @@ class DataManager
 
         $con = self::getConnection();
         $userName = $con->real_escape_string($userName);
-        $res = self::query($con, "SELECT id, userName, displayName, passwordHash, startTime FROM blog_members WHERE userName='$userName';");
+        $res = self::query($con, "SELECT id, userName, displayName, passwordHash, startTime FROM blog_member WHERE userName='$userName';");
         if($u = self::fetchObject($res))
         {
             $user = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
@@ -134,7 +136,7 @@ class DataManager
 
         $con = self::getConnection();
         $userId = intval($userId);
-        $res = self::query($con, "SELECT id, userName, displayName, passwordHash, startTime FROM blog_members WHERE id='$userId';");
+        $res = self::query($con, "SELECT id, userName, displayName, passwordHash, startTime FROM blog_member WHERE id='$userId';");
         if($u = self::fetchObject($res))
         {
             $user = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
@@ -151,7 +153,7 @@ class DataManager
         $con = self::getConnection();
 
         $userid = AuthenticationManager::getAuthenticatedUser()->getId();
-        $res = self::query($con, "SELECT * FROM blog_members WHERE id!='$userid';");
+        $res = self::query($con, "SELECT * FROM blog_member WHERE id!='$userid';");
         while($u = self::fetchObject($res))
         {
             $users[] = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
@@ -170,7 +172,7 @@ class DataManager
         $passwordHash = hash('sha1',"$userName|$password");
 
         //insert new user
-        $stmt = $con->prepare("INSERT INTO blog_members(userName, displayName, passwordHash, startTime) VALUES(?,?,?,now());");
+        $stmt = $con->prepare("INSERT INTO blog_member(userName, displayName, passwordHash, startTime) VALUES(?,?,?,now());");
         $stmt->bind_param("sss", $userName,$displayName, $passwordHash);
         $stmt->execute();
 

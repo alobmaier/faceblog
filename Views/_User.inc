@@ -3,7 +3,7 @@
     <li> <?php self::actionLink('Register', 'Register', 'User'); ?></li>
 <?php else: ?>
     <a>Welcome, <?php self::out($model->user->getUserName()); ?></a>
-    <li><?php self::beginActionForm('Logout', 'User', null, 'post'); ?>
+    <li><?php self::beginActionForm('Logout', 'User', null, 'post', 'form-navbar'); ?>
         <button type="submit" class="btn btn-navbar btn-sm">
             <span class="glyphicon glyphicon-log-out"></span> Log out
         </button>

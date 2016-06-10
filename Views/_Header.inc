@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="css/main.css" type="text/css"/>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/main.css" type="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>
 <body>
-<div class="header">
-
+<header>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -33,7 +34,8 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
+</header>
+<div class="header">
     <h1>FaceBlog</h1>
-
-
+    <p>Create posts, view posts from other users and share your thoughts!</p>
 </div>

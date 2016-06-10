@@ -1,6 +1,7 @@
 <?php require '_Header.inc'; ?>
 
-<h2>Party people</h2>
+<div class="container">
+<h2>Users</h2>
 <?php if ($model->users !== null) : ?>
     <?php if(sizeof($model->users) > 0)
     {
@@ -8,9 +9,11 @@
         require '_UserList.inc';
     }
     else{?>
-        <p>No other users registered.</p>
+        <div class="container-fluid">
+            <h4>No other users registered.</h4>
+        </div>
     <?php } ?>
 <?php else: ?>
 <?php endif; ?>
-
+</div>
 <?php require '_Footer.inc'; ?>

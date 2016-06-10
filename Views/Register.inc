@@ -1,6 +1,6 @@
 <?php require '_Header.inc'?>
 
-<?php self::beginActionForm('Register', 'User', null, 'post'); ?>
+<?php self::beginActionForm('Register', 'User', null, 'post', 'form-signin'); ?>
     <h2 class="form-signin-heading">Register</h2>
     <label for="inputUserName">Username</label>
     <input type="text" name="userName" id="inputUserName" class="form-control" placeholder="Username" value="<?php self::out($model->userName); ?>"required autofocus>

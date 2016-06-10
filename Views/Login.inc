@@ -1,6 +1,6 @@
 <?php require('_Header.inc'); ?>
 
-<?php self::beginActionForm('Login', 'User', null, 'post'); ?>
+<?php self::beginActionForm('Login', 'User', null, 'post', 'form-signin'); ?>
 <h2 class="form-signin-heading">Please sign in</h2>
 <label for="inputUserName">Username</label>
 <input type="text" name="userName" id="inputUserName" class="form-control" placeholder="Username" value="<?php self::out($model->userName); ?>"required autofocus>
