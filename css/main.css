@@ -11,6 +11,13 @@ body {
 	background: darkslategrey;
 	color: ghostwhite;
 	font-weight: bold;
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+}
+.container{
+	padding-top: 200px;
+	padding-bottom: 80px;
 }
 .header h1 {
 	margin-left: auto;
@@ -42,6 +49,8 @@ h1 {
 	width: 100%;
 	background-color: darkslategrey;
 	color: ghostwhite;
+	position: fixed;
+	z-index: 1000;
 }
 p {
 	margin: 0;
@@ -123,4 +132,7 @@ td {
 .panel-primary>.panel-heading{
 	background-color: darkslategrey;
 	border-color: darkslategrey;
+}
+.panel-body  {
+	word-break:break-all;
 }

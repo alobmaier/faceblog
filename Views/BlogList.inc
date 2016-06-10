@@ -7,8 +7,8 @@
         require '_BlogList.inc';
     }
     else{?>
-        <div class="container-fluid">
-            <h4>No blog entries found.</h4>
+        <div class="container">
+            <h4>No blog entries found for this user.</h4>
         </div>
     <?php } ?>
 <?php else: ?>

@@ -4,9 +4,7 @@ class Model
 {
     private $_data;
 
-    /**
-     * Model constructor.
-     */
+
     public function __construct()
     {
         $_data = array();

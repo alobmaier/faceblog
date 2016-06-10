@@ -36,6 +36,69 @@ class DataManager
     {
         $connection->close();
     }
+
+    public static function countUsers()
+    {
+        $counter = null;
+
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT COUNT(*) as counter FROM blog_member");
+        if($p = self::fetchObject($res))
+        {
+            $counter = intval($p->counter);
+        }
+
+        self::close($res);
+        self::closeConnection($con);
+        return $counter;
+    }
+    public static function countPosts()
+    {
+        $counter = null;
+
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT COUNT(*) as counter FROM blog_post");
+        if($p = self::fetchObject($res))
+        {
+            $counter = intval($p->counter);
+        }
+
+        self::close($res);
+        self::closeConnection($con);
+        return $counter;
+    }
+    public static function countPostsLastDay()
+    {
+        $counter = null;
+
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT COUNT(*) as counter FROM blog_post WHERE createdAt >= now() - INTERVAL 1 DAY;");
+        if($p = self::fetchObject($res))
+        {
+            $counter = intval($p->counter);
+        }
+
+        self::close($res);
+        self::closeConnection($con);
+        return $counter;
+    }
+    public static function getLastPost()
+    {
+        $lastpost = null;
+
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT id, userid, title, content,createdAt, updatedAt FROM blog_post WHERE createdAt >=
+                                            ALL(SELECT createdAt FROM blog_post) LIMIT 1;");
+        if($entry = self::fetchObject($res))
+        {
+            $lastpost = new BlogPost($entry->id, $entry->userid, $entry->title, $entry->content, $entry->createdAt, $entry->updatedAt);
+        }
+
+        self::close($res);
+        self::closeConnection($con);
+        return $lastpost;
+    }
+    
     public static function getBlogPostsForUser($userId)
     {
         $blogPosts = array();

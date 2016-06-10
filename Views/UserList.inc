@@ -9,7 +9,7 @@
         require '_UserList.inc';
     }
     else{?>
-        <div class="container-fluid">
+        <div class="container">
             <h4>No other users registered.</h4>
         </div>
     <?php } ?>

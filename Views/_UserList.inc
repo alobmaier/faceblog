@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="css/userlist.css" type="text/css"/>
-<div class="container bootstrap snippet">
+<div class="bootstrap snippet">
     <div class="row">
         <div class="col-lg-12">
             <div class="main-box no-header clearfix">

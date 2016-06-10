@@ -2,9 +2,16 @@
 
 class MainController extends Controller
 {
-    public function GET_index()
+    public function GET_Index()
     {
-        return $this->renderView('Home', new BaseModel());
+        //get stats
+        $countusers = DataManager::countUsers();
+        $countposts = DataManager::countPosts();
+        $countpostslastday = DataManager::countPostsLastDay();
+        $lastPost = DataManager::getLastPost();
+        return $this->renderView('Home', new HomeModel($countusers,$countposts, $countpostslastday, $lastPost
+            ),Controller::buildActionLink('Home',
+            'Main'));
     }
     public function GET_MyBlog()
     {
@@ -48,7 +55,7 @@ class MainController extends Controller
                 return $this->renderView('AddBlogpost', new BaseModel(null, array('Fill out all input fields!')));
             }
             DataManager::createBlogPost($_POST['title'], $_POST['content']);
-            
+
             $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
 
             return $this->renderView('MyBlogList', new BlogListModel($blogPosts,
