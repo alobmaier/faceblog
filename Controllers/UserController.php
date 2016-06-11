@@ -36,6 +36,15 @@ class UserController extends Controller
         $displayName = $_POST['displayName'];
         $password = $_POST['password'];
 
+        if(strlen($userName) < 3 || strlen($displayName) < 3)
+            return $this->renderView('Register', new RegisterModel($userName,$displayName, array('User name or display name must have at least 3 characters!')));
+        if(strlen($password) < 5)
+            return $this->renderView('Register', new RegisterModel($userName,$displayName, array('Password must have at least 5 characters!')));
+        if($_POST['password'] !== $_POST['confirmedPassword'])
+        {
+            //show error
+            return $this->renderView('Register', new RegisterModel($userName,$displayName, array('Passwords do not match')));
+        }
         if (DataManager::getUserForUserName($userName) == null)
         {
             DataManager::createUser($userName, $displayName, $password);

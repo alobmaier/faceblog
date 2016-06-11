@@ -7,13 +7,13 @@
             Stats
         </div>
         <div class="panel-body">
-            <p>amount of registered users: <?php self::out($model->countusers)?></p>
+            <p>amount of registered users: <strong><?php self::out($model->countusers)?></strong></p>
             <hr>
-            <p>total amount of posts: <?php self::out($model->countposts)?></p>
+            <p>total amount of posts: <strong><?php self::out($model->countposts)?></strong></p>
             <hr>
-            <p>amount of posts last 24h: <?php self::out($model->countPostsLastDay)?></p>
+            <p>amount of posts last 24h: <strong><?php self::out($model->countPostsLastDay)?></strong></p>
             <hr>
-            <p>last entry was posted at <?php self::out($model->lastPost->getCreatedAt())?></p>
+            <p>last entry was posted at <strong><?php self::out($model->lastPost->getCreatedAt())?></strong></p>
         </div>
     </div>
 </div>

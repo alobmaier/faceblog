@@ -15,7 +15,9 @@
             <div class="form-group">
                 <label for="message" class="col-sm-2 control-label">Content</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" rows="4" name="content"><?php self::out($model->blogPost->getContent())?></textarea>
+                    <textarea class="form-control" rows="4" name="content">
+<?php echo str_replace('\r\n',"\n",$model->blogPost->getContent());?>
+                    </textarea>
                 </div>
             </div>
             <div class="form-group">

@@ -13,8 +13,10 @@ class BlogPost extends Entity
     private $content;
     private $createdAt;
     private $updatedAt;
+    private $likes = array();
+    private $likesNames = array();
 
-    public function __construct($id, $userId, $title, $content, $createdAt, $updatedAt)
+    public function __construct($id, $userId, $title, $content, $createdAt, $updatedAt, $likes=null)
     {
         parent::__construct($id);
         $this->userId = $userId;
@@ -22,6 +24,7 @@ class BlogPost extends Entity
         $this->content = $content;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->likes = $likes;
     }
 
     /**
@@ -62,6 +65,34 @@ class BlogPost extends Entity
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return null
+     */
+    public function getLikes()
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @param array|null $likes
+     */
+    public function setLikes($likes)
+    {
+        $this->likes = $likes;
+    }
+    public function getLikeNames()
+    {
+        $this->likesNames = array();
+        if(sizeof($this->likes) > 0)
+        {
+            foreach($this->likes as $userId)
+            {
+                $this->likesNames[] = DataManager::getUserForId($userId)->getDisplayName();
+            }
+        }
+        return $this->likesNames;
     }
 
 }

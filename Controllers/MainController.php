@@ -21,8 +21,8 @@ class MainController extends Controller
 
         $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
 
-        return $this->renderView('MyBlogList', new BlogListModel($blogPosts,
-            Controller::buildActionLink('MyBlogList',
+        return $this->renderView('MyBlog', new BlogListModel($blogPosts,
+            Controller::buildActionLink('MyBlog',
                 'Main')));
     }
 
@@ -34,10 +34,27 @@ class MainController extends Controller
 
         $blogPosts = DataManager::getBlogPostsForUser($this->getParameter('userId'));
 
-        return $this->renderView('BlogList', new BlogListModel($blogPosts,
-            Controller::buildActionLink('BlogList',
+
+        return $this->renderView('Blog', new BlogListModel($blogPosts,
+            Controller::buildActionLink('Blog',
                 'Main',
                 array('userId' => $this->getParameter('userId')))));
+    }
+    public function POST_LikePost()
+    {
+        echo $this->getParameter('postId');
+        $blogEntry = $this->hasParameter('postId') ? DataManager::getBlogPostById($this->getParameter('postId')) : null;
+        DataManager::addLike($blogEntry->getId());
+
+        return $this->redirectToUrl($this->getParameter('context'));
+    }
+    public function POST_UnlikePost()
+    {
+        echo $this->getParameter('postId');
+        $blogEntry = $this->hasParameter('postId') ? DataManager::getBlogPostById($this->getParameter('postId')) : null;
+        DataManager::removeLike($blogEntry->getId());
+
+        return $this->redirectToUrl($this->getParameter('context'));
     }
     public function GET_AddPost()
     {
@@ -52,15 +69,13 @@ class MainController extends Controller
         {
             if(empty($_POST['title']) || empty($_POST['content']))
             {
-                return $this->renderView('AddBlogpost', new BaseModel(null, array('Fill out all input fields!')));
+                return $this->renderView('AddPost', new BaseModel(null, array('Fill out all input fields!')));
             }
             DataManager::createBlogPost($_POST['title'], $_POST['content']);
 
             $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
 
-            return $this->renderView('MyBlogList', new BlogListModel($blogPosts,
-                Controller::buildActionLink('MyBlogList',
-                    'Main')));
+            return $this->redirect('MyBlog', 'Main');
         }
     }
     public function GET_EditPost()
@@ -88,13 +103,13 @@ class MainController extends Controller
         {
             if(empty($_POST['title']) || empty($_POST['content']))
             {
-                return $this->renderView('EditBlogpost', new BaseModel(null, array('Fill out all input fields!')));
+                return $this->renderView('EditPost', new BaseModel(null, array('Fill out all input fields!')));
             }
             DataManager::updateBlogPost($_POST['postId'],$_POST['title'], $_POST['content']);
             $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
 
-            return $this->renderView('MyBlogList', new BlogListModel($blogPosts,
-                Controller::buildActionLink('MyBlogList',
+            return $this->renderView('MyBlog', new BlogListModel($blogPosts,
+                Controller::buildActionLink('MyBlog',
                     'Main')));
         }
     }
@@ -117,14 +132,17 @@ class MainController extends Controller
             Controller::buildActionLink('UserList',
                 'Main')));
     }
-    public function GET_Search()
+    public function POST_SearchUser()
     {
-        $books = $this->hasParameter('title') ? DataManager::getBooksForSearchCriteria($this->getParameter('title')) : null;
-        
-        return $this->renderView('Search',
-            new SearchModel($this->getParameter('title'),
-                $books,
-                ShoppingCart::getAll(),
-                Controller::buildActionLink('Search', 'Main', array('title'))));
+        if(!AuthenticationManager::isAuthenticated())
+            $this->redirect('Login', 'User');
+
+        $displayName = isset($_POST['displayName']) ? $_POST['displayName'] : '';
+
+        $users = DataManager::getUsersByDisplayName($displayName);
+
+        return $this->renderView('UserList', new UserModel($users,
+            Controller::buildActionLink('UserList',
+                'Main')));
     }
 }

@@ -4,7 +4,7 @@
 <?php else: ?>
     <a>Welcome, <?php self::out($model->user->getUserName()); ?></a>
     <li><?php self::beginActionForm('Logout', 'User', null, 'post', 'form-navbar'); ?>
-        <button type="submit" class="btn btn-navbar btn-sm">
+        <button type="submit" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-log-out"></span> Log out
         </button>
     <?php self::endActionForm(); ?></li>

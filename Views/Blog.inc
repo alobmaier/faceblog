@@ -1,5 +1,6 @@
 <?php require '_Header.inc'; ?>
 
+
 <?php if ($model->blogPosts !== null) : ?>
     <?php if(sizeof($model->blogPosts) > 0)
     {

@@ -1,10 +1,10 @@
 <?php
 
-class RegisterModel extends Model
+class RegisterModel extends BaseModel
 {
-    public function __construct($userName, $displayName)
+    public function __construct($userName, $displayName, $errors=null)
     {
-        parent::__construct();
+        parent::__construct($errors);
         $this->userName = $userName;
         $this->displayName = $displayName;
     }

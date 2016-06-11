@@ -112,7 +112,9 @@ class DataManager
 
         while($entry = self::fetchObject($res))
         {
-            $blogPosts[] = new BlogPost($entry->id, $entry->userid, $entry->title, $entry->content, $entry->createdAt, $entry->updatedAt);
+            $likes = self::getLikesForPost($entry->id);
+            $blogPosts[] = new BlogPost($entry->id, $entry->userid, $entry->title, $entry->content, $entry->createdAt, $entry->updatedAt,
+                $likes);
         }
 
         self::close($res);
@@ -126,10 +128,10 @@ class DataManager
 
         $con = self::getConnection();
         $postId = intval($postId);
-        $res = self::query($con, "SELECT id, userId, title, content FROM blog_post WHERE id='$postId';");
+        $res = self::query($con, "SELECT id, userId, title, content,createdAt,updatedAt FROM blog_post WHERE id='$postId';");
         if($p = self::fetchObject($res))
         {
-            $post = new BlogPost($p->id, $p->userId, $p->title, $p->content, null, null);
+            $post = new BlogPost($p->id, $p->userId, $p->title, $p->content, $p->createdAt, $p->updatedAt);
         }
 
         self::close($res);
@@ -211,12 +213,34 @@ class DataManager
     }
     public static function getAllUsers()
     {
-        $users = null;
+        $users = array();
 
         $con = self::getConnection();
 
         $userid = AuthenticationManager::getAuthenticatedUser()->getId();
         $res = self::query($con, "SELECT * FROM blog_member WHERE id!='$userid';");
+        while($u = self::fetchObject($res))
+        {
+            $users[] = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
+        }
+        self::close($res);
+        self::closeConnection($con);
+        return $users;
+    }
+    public static function getUsersByDisplayName($displayName)
+    {
+        $users = array();
+
+
+        $con = self::getConnection();
+        $displayName = '%' . $con->real_escape_string($displayName) . '%';
+
+        $userid = AuthenticationManager::getAuthenticatedUser()->getId();
+        $stmt = $con->prepare("SELECT * FROM blog_member WHERE id != ?
+                                                            AND displayName LIKE ?;");
+        $stmt->bind_param("is", $userid, $displayName);
+        $stmt->execute();
+        $res = $stmt->get_result();
         while($u = self::fetchObject($res))
         {
             $users[] = new User($u->id, $u->userName, $u->displayName, $u->passwordHash, $u->startTime);
@@ -245,4 +269,76 @@ class DataManager
         self::closeConnection($con);
 
     }
+
+    /*---likes---*/
+    public static function isPostLikedByAuthUser($postId)
+    {
+        $user = AuthenticationManager::getAuthenticatedUser()->getId();
+
+        $con = self::getConnection();
+        $stmt = $con->prepare("SELECT * FROM blog_like WHERE postId = ? and userId = ?");
+        $stmt->bind_param("ii", $user,$postId);
+        $stmt->execute();
+
+        if($stmt->fetch() > 0)
+        {
+            //post was liked already
+            self::close($stmt);
+            self::closeConnection($con);
+            return true;
+        }
+        //post has not been liked until now from authenticated user
+        self::close($stmt);
+        self::closeConnection($con);
+        return false;
+    }
+    public static function addLike($postId)
+    {
+        $user = AuthenticationManager::getAuthenticatedUser()->getId();
+        $postId = intval($postId);
+
+        $con = self::getConnection();
+        $stmt = $con->prepare("INSERT INTO blog_like(postId,userId) VALUES (?,?)");
+        $stmt->bind_param("ii", $postId,$user);
+        $stmt->execute();
+
+        self::close($stmt);
+        self::closeConnection($con);
+    }
+    public static function removeLike($postId)
+    {
+        $user = AuthenticationManager::getAuthenticatedUser()->getId();
+        $postId = intval($postId);
+
+        $con = self::getConnection();
+        $stmt = $con->prepare("DELETE FROM blog_like WHERE postId = ? AND userId = ?");
+        $stmt->bind_param("ii", $postId,$user);
+        $stmt->execute();
+
+        self::close($stmt);
+        self::closeConnection($con);
+    }
+    public static function getLikesForPost($postId)
+    {
+        $likesFrom = array();
+        $postId = intval($postId);
+        $con = self::getConnection();
+        $stmt = $con->prepare("SELECT userId FROM blog_like WHERE postId = ?");
+        $stmt->bind_param("i", $postId);
+        $stmt->execute();
+
+        $res = $stmt->get_result();
+        while($l = self::fetchObject($res))
+        {
+            $like = new Like($postId, $l->userId);
+            $user = self::getUserForId($l->userId);
+            $likesFrom[] = $l->userId;
+        }
+
+        self::close($stmt);
+        self::closeConnection($con);
+
+        return $likesFrom;
+    }
+
 }
