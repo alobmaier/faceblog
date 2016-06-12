@@ -69,7 +69,7 @@ class MainController extends Controller
         {
             if(empty($_POST['title']) || empty($_POST['content']))
             {
-                return $this->renderView('AddPost', new BaseModel(null, array('Fill out all input fields!')));
+                return $this->renderView('AddPost', new BaseModel(array('Fill out all input fields!')));
             }
             DataManager::createBlogPost($_POST['title'], $_POST['content']);
 
@@ -103,7 +103,7 @@ class MainController extends Controller
         {
             if(empty($_POST['title']) || empty($_POST['content']))
             {
-                return $this->renderView('EditPost', new BaseModel(null, array('Fill out all input fields!')));
+                return $this->renderView('EditPost', new BaseModel(array('Fill out all input fields!')));
             }
             DataManager::updateBlogPost($_POST['postId'],$_POST['title'], $_POST['content']);
             $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
