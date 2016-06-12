@@ -3,7 +3,7 @@
 body {
 	padding-top: 50px;
 	background-color: #f9f0ea;
-	font-family: Raleway;
+	font-family: Raleway, Helvetica, Arial, sans-serif;
 }
 .panel, .panel-heading, .panel-body{
 	border: none;
@@ -21,19 +21,28 @@ body {
 .header,.footer, .panel-primary>.panel-heading, .btn-primary{
 	background-color: #d45b00;
 }
-.footer{
-	font-family: Raleway;
-}
-.navbar{
-	font-family: Raleway;
-}
+
 .navbar-default{
 	background-color: #e7ebee;
-
 }
-h1,h2,h3,h4
-{
-	font-family: Raleway;
+.navbar-nav>li>a:hover {
+	font-weight: lighter;
+}
+
+/*slide effects on navbar links, except brand*/
+.navbar-nav>li>a:after{
+	content: '';
+	display: block;
+	margin: auto;
+	height: 3px;
+	width: 0px;
+	background: transparent;
+	transition: width .25s ease, background-color .25s ease;
+}
+
+.navbar-nav>li>a:hover:after{
+	width: 100%;
+	background: #d45b00;
 }
 .fat{
 	font-weight: bold;
@@ -41,7 +50,6 @@ h1,h2,h3,h4
 .header {
 	margin-bottom: 20px;
 	padding: 30px 10px 40px 20px;
-	font-family: Raleway;
 	color: ghostwhite;
 	font-weight: bold;
 	position: fixed;
@@ -66,8 +74,12 @@ h1,h2,h3,h4
 }
 
 a {
+	color: #3498db;
+	outline: none!important;
+}
+a:hover {
+	font-weight: bold;
 	text-decoration: none;
-	color: #3366FF;
 }
 
 h1 {
@@ -167,16 +179,12 @@ td {
 }
 .title {
 	font-weight: bold;
-	font-family: Raleway ;
 	color: #ff584c;
 }
 .panel-primary{
 	-webkit-box-shadow: 0px 0px 20px 2px rgba(0,0,0,0.71);
 	-moz-box-shadow: 0px 0px 20px 2px rgba(0,0,0,0.71);
 	box-shadow: 0px 0px 20px 2px rgba(0,0,0,0.71);
-}
-.panel-primary>.panel-heading{
-	border-color: darkslategrey;
 }
 .panel-body  {
 	word-break:break-all;

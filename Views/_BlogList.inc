@@ -8,8 +8,8 @@
             <?php foreach($model->blogPosts as $post): ?>
                 <?php $isLiked = in_array($model->user->getId(), $post->getLikes()); ?>
                 <h2 class="title"><?php self::out($post->getTitle()); ?></h2>
-                <p class="info"><span class="glyphicon glyphicon-time"></span> Created on: <?php self::out($post->getCreatedAt());?></p>
-                <p class="info"><span class="glyphicon glyphicon-time"></span> Latest change on: <?php self::out($post->getUpdatedAt());?></p>
+                <p class="info"><span class="glyphicon glyphicon-time"></span> Created on: <?php self::out(self::formatTime($post->getCreatedAt()));?></p>
+                <p class="info"><span class="glyphicon glyphicon-time"></span> Latest change on: <?php self::out(self::formatTime($post->getUpdatedAt()));?></p>
                 <br>
                 <p>
                     <?php echo nl2br(str_replace('\r\n',"\r\n",$post->getContent()));?>

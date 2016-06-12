@@ -9,19 +9,19 @@
                             <thead>
                             <tr>
                                 <th><span>User</span></th>
-                                <th><span>Created</span></th>
+                                <th><span>on faceblog since</span></th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php foreach($model->users as $user): ?>
                                 <tr>
                                     <td>
-                                        <img src="http://bootdey.com/img/Content/user_1.jpg" alt="">
+                                        <img src="assets/img/user_icon.png" alt="">
                                         <?php self::actionLink($user->getDisplayName(), 'Blog','Main','user-link',
                                             array('userId' => $user->getId()))?>
                                         <span class="user-subhead">Member</span>
                                     </td>
-                                    <td><?php self::out($user->getStartTime())?></td>
+                                    <td><?php self::out(self::formatTime($user->getStartTime()))?></td>
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>

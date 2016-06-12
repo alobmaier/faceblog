@@ -19,6 +19,11 @@ class ViewRenderer
         echo(nl2br(htmlentities($string)));
     }
 
+    private static function formatTime($string)
+    {
+        $time = strtotime($string);
+        return strftime('%d. %m. %Y %R',$time);
+    }
     private static function beginActionForm($action, $controller, $params=null, $method='get', $style=null)
     {
         $form = <<<FORM
