@@ -1,7 +1,14 @@
 # FaceBlog
 
+##Description
 small php project to get into the language, not perfect
 just for studying purposes.
+
+* FaceBlog is a small application for creating own blog posts, view blog posts from other users and like or unlike them.
+* you can add users via Register tab
+* you can edit and delete your own posts
+* view posts from other users via People tab
+* of course you can log in and log out ;-)
 
 ##How to start
 * download and set up XAMPP
