@@ -8,15 +8,15 @@
                 <label for="name" class="col-sm-2 control-label">Title</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="name" name="title" placeholder="Titel"
-                           value="<?php self::out($model->blogPost->getTitle())?>">
+                           value="<?php echo stripcslashes(str_replace('\r\n',"\n",$model->blogPost->getTitle()))?>">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="message" class="col-sm-2 control-label">Content</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" rows="4" name="content">
-<?php echo str_replace('\r\n',"\n",$model->blogPost->getContent());?>
+                    <textarea class="form-control" name="content">
+<?php echo stripcslashes(str_replace('\r\n',"\n",$model->blogPost->getContent()));?>
                     </textarea>
                 </div>
             </div>

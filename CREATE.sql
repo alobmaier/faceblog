@@ -15,7 +15,7 @@ CREATE TABLE blog_post (
 	id INT AUTO_INCREMENT PRIMARY KEY
 	,userid INT NOT NULL
 	,title VARCHAR(255) NOT NULL
-	,content VARCHAR(255) NOT NULL
+	,content text NOT NULL
 	,createdAt DATETIME NOT NULL
 	,updatedAt DATETIME NOT NULL
 	,FOREIGN KEY (userid) REFERENCES blog_member(id)
