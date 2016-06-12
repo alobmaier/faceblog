@@ -1,6 +1,6 @@
 # FaceBlog
 
-small php projects to get into the language, not perfect
+small php project to get into the language, not perfect
 just for studying purposes.
 
 ##How to start
