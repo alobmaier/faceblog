@@ -4,7 +4,7 @@ class DataManager
 {
     private static function getConnection()
     {
-        $con = new mysqli('localhost', 'root', 'root', 'faceblogdb');
+        $con = new mysqli('localhost', 'root', '', 'faceblogdb');
         if(mysqli_connect_errno())
         {
             throw new Exception('unable to connect to database');

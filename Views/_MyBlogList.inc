@@ -12,7 +12,7 @@
                 <p class="info"><span class="glyphicon glyphicon-time"></span> Latest change on: <?php self::out(self::formatTime($post->getUpdatedAt()));?></p>
                 <br>
                 <p>
-                    <?php echo nl2br(str_replace('\r\n',"\r\n",$post->getContent()));?>
+                    <?php echo nl2br(htmlentities(str_replace('\r\n',"\r\n",$post->getContent())));?>
                 </p>
                 <br>
                 <?php self::actionLink('<span class="glyphicon glyphicon-pencil"></span> Edit', 'EditPost','Main','btn btn-default btn-sm',
