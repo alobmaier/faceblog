@@ -1,2 +1,3 @@
-# scr4
+# scr4 - FaceBlog
 scripting project for school
+

@@ -2,100 +2,147 @@
 
 class MainController extends Controller
 {
-    public function GET_index()
+    public function GET_Index()
     {
-        return $this->renderView('Home', new BaseModel());
+        //get stats
+        $countusers = DataManager::countUsers();
+        $countposts = DataManager::countPosts();
+        $countpostslastday = DataManager::countPostsLastDay();
+        $lastPost = DataManager::getLastPost();
+        return $this->renderView('Home', new HomeModel($countusers,$countposts, $countpostslastday, $lastPost
+            ),Controller::buildActionLink('Home',
+            'Main'));
     }
-
-    public function GET_List()
-    {
-        $categories = DataManager::getCategories();
-
-        $books = $this->getParameter('categoryId') ? DataManager::getBooksForCategory($this->getParameter('categoryId')) : null;
-
-        return $this->renderView('List', new ListModel($categories,
-            $books,
-            ShoppingCart::getAll(),
-            Controller::buildActionLink('List',
-                'Main',
-                array('categoryId' => $this->getParameter('categoryId')))));
-    }
-    public function GET_Search()
-    {
-        $books = $this->hasParameter('title') ? DataManager::getBooksForSearchCriteria($this->getParameter('title')) : null;
-        
-        return $this->renderView('Search',
-            new SearchModel($this->getParameter('title'),
-                $books,
-                ShoppingCart::getAll(),
-                Controller::buildActionLink('Search', 'Main', array('title'))));
-    }
-    public function POST_AddToCart()
-    {
-        ShoppingCart::add($this->getParameter('bookId'));
-        return $this->redirectToUrl($this->getParameter('context'));
-
-    }
-    public function POST_RemoveFromCart()
-    {
-        ShoppingCart::remove($this->getParameter('bookId'));
-        return $this->redirectToUrl($this->getParameter('context'));
-    }
-    public function GET_Checkout()
+    public function GET_MyBlog()
     {
         if(!AuthenticationManager::isAuthenticated())
             $this->redirect('Login', 'User');
-        $cartSize = ShoppingCart::size();
 
-        if($cartSize == 0)
+
+        $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
+
+        return $this->renderView('MyBlog', new BlogListModel($blogPosts,
+            Controller::buildActionLink('MyBlog',
+                'Main')));
+    }
+
+    public function GET_Blog()
+    {
+        if(!AuthenticationManager::isAuthenticated())
+            $this->redirect('Login', 'User');
+
+
+        $blogPosts = DataManager::getBlogPostsForUser($this->getParameter('userId'));
+
+
+        return $this->renderView('Blog', new BlogListModel($blogPosts,
+            Controller::buildActionLink('Blog',
+                'Main',
+                array('userId' => $this->getParameter('userId')))));
+    }
+    public function POST_LikePost()
+    {
+        echo $this->getParameter('postId');
+        $blogEntry = $this->hasParameter('postId') ? DataManager::getBlogPostById($this->getParameter('postId')) : null;
+        DataManager::addLike($blogEntry->getId());
+
+        return $this->redirectToUrl($this->getParameter('context'));
+    }
+    public function POST_UnlikePost()
+    {
+        echo $this->getParameter('postId');
+        $blogEntry = $this->hasParameter('postId') ? DataManager::getBlogPostById($this->getParameter('postId')) : null;
+        DataManager::removeLike($blogEntry->getId());
+
+        return $this->redirectToUrl($this->getParameter('context'));
+    }
+    public function GET_AddPost()
+    {
+        if(!AuthenticationManager::isAuthenticated())
+            $this->redirect('Login', 'User');
+
+        return $this->renderView('AddPost', new BaseModel(null));
+    }
+    public function POST_AddPost()
+    {
+        if(isset($_POST['title']) && isset($_POST['content']))
         {
-            return $this->renderView('CheckoutEmptyCart', new BaseModel());
+            if(empty($_POST['title']) || empty($_POST['content']))
+            {
+                return $this->renderView('AddPost', new BaseModel(null, array('Fill out all input fields!')));
+            }
+            DataManager::createBlogPost($_POST['title'], $_POST['content']);
+
+            $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
+
+            return $this->redirect('MyBlog', 'Main');
+        }
+    }
+    public function GET_EditPost()
+    {
+        if(!AuthenticationManager::isAuthenticated())
+            $this->redirect('Login', 'User');
+
+        //TODO check if blog was really posted by authenticated user!
+        $id = $this->getParameter('postId');
+        $post = DataManager::getBlogPostById($id);
+
+        if($post !== null && $post->getUserId() == AuthenticationManager::getAuthenticatedUser()->getId())
+        {
+            return $this->renderView('EditPost', new BlogModel($post));
         }
         else
-        {
-            return $this->renderView('Checkout',
-                new CheckoutModel($cartSize,
-                    $this->getParameter('nameOnCard'),
-                    $this->getParameter('cardNumber')));
+            $this->redirect('Home', 'Main');
 
-        }
 
     }
-    public function POST_Checkout()
+    public function POST_EditPost()
     {
-        $cartSize = ShoppingCart::size();
+        //TODO save post in db
+        if(isset($_POST['title']) && isset($_POST['content']))
+        {
+            if(empty($_POST['title']) || empty($_POST['content']))
+            {
+                return $this->renderView('EditPost', new BaseModel(null, array('Fill out all input fields!')));
+            }
+            DataManager::updateBlogPost($_POST['postId'],$_POST['title'], $_POST['content']);
+            $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
 
-        $errors = array();
+            return $this->renderView('MyBlog', new BlogListModel($blogPosts,
+                Controller::buildActionLink('MyBlog',
+                    'Main')));
+        }
+    }
+    public function GET_DeletePost()
+    {
+        $id = $this->getParameter('postId');
 
-        $nameOnCard = $this->getParameter('nameOnCard') ? trim($this->getParameter('nameOnCard')) : null;
-        if($nameOnCard == null || strlen($nameOnCard) == 0)
-        {
-            $errors[] = 'Invalid name on card.';
-        }
-        $cardNumber = $this->getParameter('cardNumber') ? str_replace(' ', '', $this->getParameter('cardNumber')) : null;
+        DataManager::deleteBlogEntryById($id);
 
-        if($cardNumber == null || strlen($cardNumber) != 16 || ctype_digit($cardNumber))
-        {
-            $errors[] = 'Invalid card number.';
-        }
-        if(count($errors) > 0)
-        {
-            return $this->renderView('Checkout', new CheckoutModel($cartSize, $nameOnCard, $cardNumber, $errors));
-        }
-        $user = AuthenticationManager::getAuthenticatedUser();
-        $orderId = DataManager::createOrder($user->getId(), ShoppingCart::getAll(), $nameOnCard, $cardNumber);
-        if(!$orderId)
-        {
-            // placing of order failed
-            return $this->renderView('Checkout', new CheckoutModel($cartSize, $nameOnCard, $cardNumber, array('Could not create order.')));
-        }
-        // success --> clear cart and redirect
-        ShoppingCart::clear();
+        $this->redirect('MyBlog', 'Main');
+    }
+    public function GET_UserList()
+    {
+        if(!AuthenticationManager::isAuthenticated())
+            $this->redirect('Login', 'User');
         
-        return $this->redirect('CheckoutSuccess', 'Main', array('orderId'=>$orderId));
+        $users = DataManager::getAllUsers();
+        
+        return $this->renderView('UserList', new UserModel($users,
+            Controller::buildActionLink('UserList',
+                'Main')));
     }
-    public function GET_CheckoutSuccess()
+    public function POST_SearchUser()
     {
-        return $this->renderView('CheckoutSuccess', new CheckoutSuccessModel($this->getParameter('orderId')));
+        if(!AuthenticationManager::isAuthenticated())
+            $this->redirect('Login', 'User');
+
+        $displayName = isset($_POST['displayName']) ? $_POST['displayName'] : '';
+
+        $users = DataManager::getUsersByDisplayName($displayName);
+
+        return $this->renderView('UserList', new UserModel($users,
+            Controller::buildActionLink('UserList',
+                'Main')));
     }
 }

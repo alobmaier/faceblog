@@ -2,7 +2,7 @@
 
 <div class="footer">
     <hr>
-    <p><?php echo(strftime('%c')); ?></p>
+    <p><?php echo(strftime('%A, %d. %B. %Y %R')); ?></p>
 </div>
 </body>
 </html>
