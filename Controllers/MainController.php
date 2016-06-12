@@ -99,11 +99,15 @@ class MainController extends Controller
     public function POST_EditPost()
     {
         //TODO save post in db
+        $post = null;
+        if(isset($_POST['postId']))
+            $post = DataManager::getBlogPostById($_POST['postId']);
+
         if(isset($_POST['title']) && isset($_POST['content']))
         {
             if(empty($_POST['title']) || empty($_POST['content']))
             {
-                return $this->renderView('EditPost', new BaseModel(array('Fill out all input fields!')));
+                return $this->renderView('EditPost', new BlogModel($post,null,null,array('Fill out all input fields!')));
             }
             DataManager::updateBlogPost($_POST['postId'],$_POST['title'], $_POST['content']);
             $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
