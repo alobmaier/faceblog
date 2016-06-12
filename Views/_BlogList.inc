@@ -7,7 +7,7 @@
         <div class="panel-body">
             <?php foreach($model->blogPosts as $post): ?>
                 <?php $isLiked = in_array($model->user->getId(), $post->getLikes()); ?>
-                <h2 class="title"><?php self::out($post->getTitle()); ?></h2>
+                <h2 class="title"><?php echo nl2br(htmlentities(str_replace('\r\n',"\r\n",$post->getTitle()))) ?></h2>
                 <p class="info"><span class="glyphicon glyphicon-time"></span> Created on: <?php self::out(self::formatTime($post->getCreatedAt()));?></p>
                 <p class="info"><span class="glyphicon glyphicon-time"></span> Latest change on: <?php self::out(self::formatTime($post->getUpdatedAt()));?></p>
                 <br>
