@@ -37,7 +37,9 @@ class UserController extends Controller
         $password = $_POST['password'];
 
         if(strlen($userName) < 3 || strlen($displayName) < 3)
-            return $this->renderView('Register', new RegisterModel($userName,$displayName, array('User name or display name must have at least 3 characters!')));
+            return $this->renderView('Register', new RegisterModel($userName,$displayName, array('User name and display name must have at least 3 characters!')));
+        if(!ctype_alnum($userName) || !ctype_alnum($displayName))
+            return $this->renderView('Register', new RegisterModel($userName,$displayName,array('User name or/and display name has unallowed characters like _,",+,-,...!"')));
         if(strlen($password) < 5)
             return $this->renderView('Register', new RegisterModel($userName,$displayName, array('Password must have at least 5 characters!')));
         if($_POST['password'] !== $_POST['confirmedPassword'])
