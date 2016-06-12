@@ -1,5 +1,8 @@
 .search{
-    width: 50%;
+    width: 25%;
+}
+.btn-primary{
+    margin-bottom: 0;
 }
 .main-box.no-header {
     padding-top: 20px;

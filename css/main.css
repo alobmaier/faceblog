@@ -15,7 +15,7 @@ body {
 	border: none;
 	margin-bottom: 5px;
 }
-.btn-primary:hover{
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:focus{
 	background-color: #9b4600;
 }
 .header,.footer, .panel-primary>.panel-heading, .btn-primary{

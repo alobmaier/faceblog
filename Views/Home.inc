@@ -13,7 +13,11 @@
             <hr>
             <p>amount of posts last 24h: <strong><?php self::out($model->countPostsLastDay)?></strong></p>
             <hr>
-            <p>last entry was posted at <strong><?php self::out($model->lastPost->getCreatedAt())?></strong></p>
+            <?php if($model->lastPost !== null):?>
+                <p>last entry was posted at <strong><?php self::out($model->lastPost->getCreatedAt())?></strong></p>
+            <?php else:?>
+                <p>No entry has been posted yet.</p>
+            <?php endif;?>
         </div>
     </div>
 </div>

@@ -330,8 +330,6 @@ class DataManager
         $res = $stmt->get_result();
         while($l = self::fetchObject($res))
         {
-            $like = new Like($postId, $l->userId);
-            $user = self::getUserForId($l->userId);
             $likesFrom[] = $l->userId;
         }
 
