@@ -9,6 +9,7 @@ class MainController extends Controller
         $countposts = DataManager::countPosts();
         $countpostslastday = DataManager::countPostsLastDay();
         $lastPost = DataManager::getLastPost();
+
         return $this->renderView('Home', new HomeModel($countusers,$countposts, $countpostslastday, $lastPost
             ),Controller::buildActionLink('Home',
             'Main'));
@@ -107,14 +108,11 @@ class MainController extends Controller
         {
             if(empty($_POST['title']) || empty($_POST['content']))
             {
-                return $this->renderView('EditPost', new BlogModel($post,null,null,array('Fill out all input fields!')));
+                return $this->renderView('EditPost', new BlogModel($post,null,array('Fill out all input fields!')));
             }
             DataManager::updateBlogPost($_POST['postId'],$_POST['title'], $_POST['content']);
-            $blogPosts = DataManager::getBlogPostsForUser(AuthenticationManager::getAuthenticatedUser()->getId());
 
-            return $this->renderView('MyBlog', new BlogListModel($blogPosts,
-                Controller::buildActionLink('MyBlog',
-                    'Main')));
+            $this->redirect('MyBlog','Main');
         }
     }
     public function GET_DeletePost()
