@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Andi
- * Date: 09.06.2016
- * Time: 17:20
- */
 class BlogPost extends Entity
 {
     private $userId;
