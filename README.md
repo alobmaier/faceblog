@@ -1,6 +1,6 @@
 # FaceBlog
 
-##Description
+## Description
 small php project to get into the language, not perfect
 just for studying purposes.
 
@@ -10,7 +10,7 @@ just for studying purposes.
 * view posts from other users via People tab
 * of course you can log in and log out ;-)
 
-##How to start
+## How to start
 * download and set up XAMPP
 * clone repo `git clone <[link]>` into htdocs folder of XAMPP
 * start apache and mysql of XAMPP
